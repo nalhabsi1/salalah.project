@@ -2,29 +2,29 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Salalah Project Progress Dashboard</title>
+<title>Salalah Project Progress </title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<!-- MapLibre -->
+
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css">
 <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
 
-<!-- Turf -->
+
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
 
-<!-- Chart.js + Datalabels -->
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 
-<!-- Proj4 (reproject UTM ↔ WGS84) -->
+
 <script src="https://cdn.jsdelivr.net/npm/proj4@2.9.2/dist/proj4.js"></script>
 
-<!-- Font Awesome Icons -->
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
   :root{
-    /* Modern vibrant color scheme */
+ 
     --bg: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
     --panel: rgba(255, 255, 255, 0.5);
     --panel2: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, rgba(247,250,252,0.45) 100%);
@@ -34,15 +34,15 @@
     --accent: #667eea;
     --accent2: #764ba2;
 
-    /* Progress colors - more vibrant */
+   
     --processed: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --remaining: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     --outline: rgba(102, 126, 234, 0.3);
 
-    /* Fluid base font size - increased for readability */
+ 
     --fs: clamp(16px, 1.2vw + 12px, 22px);
     
-    /* Shadows */
+
     --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
     --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
     --shadow-lg: 0 8px 32px rgba(0,0,0,0.16);
@@ -138,7 +138,7 @@
     letter-spacing: -0.3px;
   }
 
-  /* Left */
+ 
   #mapAssets{ 
     flex:1 1 auto; 
     border-radius: 16px; 
@@ -149,7 +149,7 @@
     border: 2px solid rgba(255, 255, 255, 0.3);
   }
 
-  /* Floating Layer Dock - Modern glassmorphism */
+
   .dock{
     position:absolute; z-index:5; top:16px; left:16px;
     width: 380px; max-height: calc(100% - 32px);
@@ -313,7 +313,7 @@
     transform: scale(1.05);
   }
 
-  /* Toggle switch */
+
   .switch{ position:relative; width:42px; height:24px; }
   .switch input{ position:absolute; opacity:0; width:0; height:0; }
   .slider{
@@ -453,7 +453,7 @@
   .btn{ border:1px solid var(--border); background:#fff; padding:8px 12px; border-radius:10px; font-weight:800; cursor:pointer; }
   .btn:active{ transform: translateY(1px); }
 
-  /* Maplibre scale control spacing */
+
   .maplibregl-ctrl-scale { margin: 8px; }
 
   @media (max-width: 1200px){
@@ -473,12 +473,12 @@
 </header>
 
 <div class="app hidden">
-  <!-- LEFT -->
+  
   <section class="card" style="grid-column:1;">
     <h4>Assets Map</h4>
 
     <div id="mapAssets">
-      <!-- Floating Layer Dock -->
+      
       <div id="layerDock" class="dock collapsed">
         <div class="dock-header">
           <div class="dock-title">
@@ -511,7 +511,7 @@
     </div>
   </section>
 
-  <!-- RIGHT -->
+
   <section class="card" style="grid-column:2;">
     <h4>Progress Coverage</h4>
     <div id="mapProgress"></div>
@@ -533,7 +533,7 @@
 </div>
 
 <script>
-/* -------- Dev error overlay (remove in prod) -------- */
+
 window.addEventListener('error', e=>{
   const b=document.createElement('div'); b.style.cssText='position:fixed;inset:12px;z-index:999999;background:#fff;color:#1a2242;border:1px solid #e6ebff;border-radius:12px;padding:14px;box-shadow:0 10px 20px rgba(0,0,0,.12);';
   b.innerHTML=`<b>JS Error</b><br>${e.message}<br><pre style="white-space:pre-wrap">${e.filename}:${e.lineno}:${e.colno}</pre>`;
@@ -542,14 +542,14 @@ window.addEventListener('error', e=>{
 </script>
 
 <script>
-/* ================= CORE CONFIG ================= */
+
 const CENTER = [54.1, 17.02];
 const baseStyle = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json'; // token-free light
 
 const PROCESSED_URL = 'data/Processed.geojson';
 const REMAIN_URL    = 'data/Remaining.geojson';
 
-/* ====== Helpers ====== */
+
 async function loadJSON(u){ const r=await fetch(encodeURI(u)); if(!r.ok) throw new Error(u); return r.json(); }
 async function loadText(u){ const r=await fetch(encodeURI(u)); if(!r.ok) throw new Error(u); return r.text(); }
 
@@ -565,7 +565,7 @@ function displayNameFromFile(file){
 }
 function groupOfFile(manifest, file){ for (const [g, arr] of Object.entries(manifest)) if (arr.includes(file)) return g; return 'Other'; }
 
-// NEW: try multiple filename variants for streets and report the winner
+
 async function findStreetFile(){
   const candidates = [
     'data/street.geojson','data/Street.geojson','data/STREET.geojson',
@@ -590,7 +590,7 @@ async function findStreetFile(){
       }
     }catch(e){ 
       console.warn('⚠️ Failed to load', path, e.message); 
-      /* try next */ 
+
     }
   }
   throw new Error('No street file found in /data');
@@ -601,7 +601,7 @@ const GROUP_COLORS = { Utilities:'#2563eb', Health:'#ef4444', PublicSafety:'#933
   Automotive:'#10b981', UrbanPlanning:'#06b6d4', Other:'#94a3b8' };
 const colorFor = (g)=>GROUP_COLORS[g]||GROUP_COLORS.Other;
 
-// Font Awesome icons for each group (fallback)
+
 const GROUP_ICONS = {
   Automotive:'fa-car', Education:'fa-graduation-cap', Financial:'fa-dollar-sign', FoodFacilities:'fa-utensils',
   Health:'fa-hospital', Hydrology:'fa-water', LandCover:'fa-tree', PublicFacilities:'fa-building',
@@ -609,48 +609,48 @@ const GROUP_ICONS = {
   UrbanPlanning:'fa-city', Utilities:'fa-bolt', Government:'fa-landmark', Religion:'fa-mosque', Other:'fa-map-marker-alt'
 };
 
-// Unique icons for each asset file
+
 const ASSET_ICONS = {
-  // Automotive
+ 
   'GasStation': 'fa-gas-pump', 'Service_Stations': 'fa-wrench',
-  // Education
+ 
   'College': 'fa-graduation-cap', 'Nursery': 'fa-baby', 'Schools': 'fa-school', 'TrainingCenters': 'fa-chalkboard-teacher', 'University': 'fa-university',
-  // Financial
+  
   'ATMs': 'fa-money-bill', 'Banks': 'fa-university', 'Insurance': 'fa-shield-alt', 'MoneyExchange': 'fa-exchange-alt',
-  // FoodFacilities
+  
   'Bakery': 'fa-birthday-cake', 'Butcher': 'fa-drumstick-bite', 'Cafes': 'fa-coffee', 'Restaurants': 'fa-utensils',
-  // Health
+ 
   'Clinics': 'fa-clinic-medical', 'HealthCenters': 'fa-heartbeat', 'Hospitals': 'fa-hospital', 'Pharmacies': 'fa-pills',
-  // Hydrology
+  
   'Afalj': 'fa-stream', 'Dams': 'fa-dam',
-  // LandCover
+  
   'Tree': 'fa-tree',
-  // PublicFacilities
+ 
   'Azabah': 'fa-horse', 'CarRentalAgency': 'fa-car', 'Cemetery': 'fa-cross', 'churches': 'fa-church', 'CleaningServices': 'fa-broom', 'ConstructionOffice': 'fa-hard-hat',
   'Court': 'fa-gavel', 'EventHalls': 'fa-building', 'Florist': 'fa-seedling', 'GardenCenter': 'fa-spa', 'GovernmentOffice': 'fa-landmark',
   'Gym': 'fa-dumbbell', 'import_export_office': 'fa-globe', 'JewelryStore': 'fa-gem', 'ManpowerRecruitmentOffice': 'fa-users', 'Mosques': 'fa-mosque',
   'Museum': 'fa-museum', 'Optician': 'fa-glasses', 'Parks': 'fa-tree', 'PetStore': 'fa-paw', 'PhotographyStudio': 'fa-camera',
   'PostOffice': 'fa-envelope', 'PrintingStationeryStore': 'fa-print', 'PublicRestroom': 'fa-restroom', 'RegistrationOffice': 'fa-file-alt',
   'Resthouse': 'fa-bed', 'SportField': 'fa-futbol', 'Telecom_Provider': 'fa-broadcast-tower', 'VeterinaryPharmacy': 'fa-syringe',
-  // PublicSafety
+  
   'CivilDefenseCenters': 'fa-shield-alt', 'PoliceStation': 'fa-shield-alt',
-  // RoadTransportation
+  
   'Bridges': 'fa-bridge', 'BusStops': 'fa-bus', 'ParkingLot': 'fa-parking', 'Roundabout': 'fa-circle', 'SLLstreet': 'fa-road', 'street': 'fa-road', 'TrafficSignals': 'fa-traffic-light',
-  // Shopping
+ 
   'Barbershop': 'fa-cut', 'ClothingStore': 'fa-tshirt', 'CosmeticsStore': 'fa-palette', 'Electronics': 'fa-plug', 'GroceryStore': 'fa-shopping-basket',
   'Hardware': 'fa-tools', 'Homegoods': 'fa-home', 'Laudary': 'fa-tshirt', 'ShoppingMall': 'fa-store', 'SuperMarket': 'fa-shopping-cart', 'Tailorshop': 'fa-cut',
-  // TouristSites
+ 
   'Beaches': 'fa-umbrella-beach', 'Hotels': 'fa-hotel', 'Tomb': 'fa-monument', 'TourismAttractions': 'fa-camera-retro', 'Travel_Agencies': 'fa-plane',
-  // Utilities
+  
   'LightPoles': 'fa-lightbulb', 'Manholes': 'fa-circle', 'OTC': 'fa-tower-broadcast'
 };
 const iconForAsset = (file) => {
-  const base = file.replace(/\.geojson$/i, '').replace(/^[^_]+_/, ''); // Remove group prefix and extension
+  const base = file.replace(/\.geojson$/i, '').replace(/^[^_]+_/, '');
   return ASSET_ICONS[base] || ASSET_ICONS[file.replace(/\.geojson$/i, '')] || GROUP_ICONS.Other;
 };
 const iconFor = (g)=>GROUP_ICONS[g]||GROUP_ICONS.Other;
 
-/* ====== CRS utilities (proj4) – REVISED ====== */
+
 const WGS84 = 'EPSG:4326';
 proj4.defs('EPSG:32639','+proj=utm +zone=39 +datum=WGS84 +units=m +no_defs +type=crs');
 proj4.defs('EPSG:32640','+proj=utm +zone=40 +datum=WGS84 +units=m +no_defs +type=crs');
@@ -670,32 +670,32 @@ function pickSampleXY(geojson){
   return null;
 }
 
-/** Robust CRS guesser for Oman datasets (Salalah ~ 52–56E, 16–18N) */
+
 function detectCRS(geojson){
-  // 1) Trust explicit crs if provided
+  
   const crsTag = geojson?.crs?.properties?.name || geojson?.crs?.name;
   if (crsTag && /EPSG:\d+/.test(crsTag)) return crsTag.toUpperCase();
 
-  // 2) Heuristics from coordinate magnitudes
+  
   const xy = pickSampleXY(geojson);
   if (!xy || !Number.isFinite(xy[0]) || !Number.isFinite(xy[1])) return WGS84;
 
   const [x,y] = xy;
 
-  // Looks like lon/lat already?
+  
   if (x >= 52 && x <= 56 && y >= 15 && y <= 20) return 'EPSG:4326';
 
-  // Typical Web Mercator meters (~±20,037,508)
+  
   if (Math.abs(x) > 1_000_000 && Math.abs(y) > 1_000_000) return 'EPSG:3857';
 
-  // UTM meters (eastings ~200k–900k; northings 0–10,000,000)
+  
   const looksUTM = (x >= 100_000 && x <= 900_000 && y >= 0 && y <= 10_000_000);
   if (looksUTM){
-    // Salalah sits mostly Zone 40N; occasionally 39/41 if edge data
+    
     return 'EPSG:32640';
   }
 
-  // Fallback
+ 
   return WGS84;
 }
 
@@ -717,18 +717,18 @@ function reprojectFC(fc, fromEPSG, toEPSG=WGS84){
   return out;
 }
 
-/* ====== Maps ====== */
+
 const mapAssets = new maplibregl.Map({ container:'mapAssets', style:baseStyle, center:CENTER, zoom:11, minZoom:5, maxZoom:19 });
 mapAssets.addControl(new maplibregl.NavigationControl(), 'top-right');
 mapAssets.addControl(new maplibregl.ScaleControl({ maxWidth:160, unit:'metric' }), 'bottom-left');
-mapAssets.setMaxBounds([[36,-5],[66,30]]); // keep within region
+mapAssets.setMaxBounds([[36,-5],[66,30]]); 
 
 const mapProgress = new maplibregl.Map({ container:'mapProgress', style:baseStyle, center:CENTER, zoom:11, minZoom:5, maxZoom:19 });
 mapProgress.addControl(new maplibregl.NavigationControl(), 'top-right');
 mapProgress.addControl(new maplibregl.ScaleControl({ maxWidth:160, unit:'metric' }), 'bottom-left');
 mapProgress.setMaxBounds([[36,-5],[66,30]]);
 
-/* ====== Charts ====== */
+
 Chart.register(ChartDataLabels);
 Chart.defaults.color = '#1a202c';
 Chart.defaults.font.size = 16;
@@ -741,8 +741,8 @@ const areaChart = new Chart(document.getElementById('areaChart').getContext('2d'
   type:'doughnut',
   data:{ labels:['Processed km²','Remaining km²'], datasets:[{ data:[0,0],
     backgroundColor:[
-      '#71b084',  // Processed color (matches map)
-      '#bca3c2'   // Remaining color (matches map)
+      '#71b084',  
+      '#bca3c2'   
     ], borderWidth:0 }] },
   options:{ maintainAspectRatio:false, cutout:'38%', plugins:{ legend:{ position:'bottom' },
     datalabels:{ color:'#fff', font:{ weight:'1000', size:16 }, formatter:v => (typeof v==='number'? v.toFixed(2)+' km²':v) } } }
@@ -754,11 +754,11 @@ const assetBar = new Chart(document.getElementById('assetBar').getContext('2d'),
     scales:{ x:{ beginAtZero:true }, y:{ ticks:{ autoSkip:false } } } }
 });
 
-/* ====== Feature cache state ====== */
-const featuresByLayer = new Map();   // lyrId -> Feature[]
+
+const featuresByLayer = new Map();   
 const activeLayers = new Set();
 
-/* ====== Layer Dock ====== */
+
 function buildLayerDock(manifest, layerIds){
   const dock   = document.getElementById('layerDock');
   const listEl = document.getElementById('dockList');
@@ -792,7 +792,7 @@ function buildLayerDock(manifest, layerIds){
     const excludeFiles = ['GeologyFormation.geojson', 'SoilType.geojson', 'Swamp.geojson', 'Water_Spread.geojson', 'Streams.geojson', 'LandUse.geojson', 'Intersections.geojson', 'Village.geojson', 'GroceryStore.geojson'];
     for (const [group, files] of Object.entries(manifest)){
       for (const file of files){
-        // Skip excluded files
+        
         if (excludeFiles.includes(file)) continue;
         
         const name = displayNameFromFile(file);
@@ -826,7 +826,7 @@ function buildLayerDock(manifest, layerIds){
       stripe.className = 'stripe';
       stripe.style.background = r.color;
       const iconEl = document.createElement('i');
-      // Find the file name for this layer to get unique icon
+      
       let assetIcon = GROUP_ICONS.Other;
       for (const [group, files] of Object.entries(manifest)) {
         for (const file of files) {
@@ -858,22 +858,22 @@ function buildLayerDock(manifest, layerIds){
       const tools = document.createElement('div');
       tools.className = 'tools';
 
-      // toggle
+      
       const sw = document.createElement('label');
       sw.className = 'switch';
       sw.innerHTML = `<input type="checkbox" ${r.on?'checked':''}><span class="slider"></span>`;
       const cb = sw.querySelector('input');
       cb.onchange = () => {
         const on = cb.checked;
-        // Skip toggle for Manholes, LightPoles, Tree, and street (not rendered on map)
+        
         const isHiddenLayer = /^(lyr_Manholes|lyr_LightPoles|lyr_Tree|lyr_street|lyr_SLLstreet)$/i.test(r.id);
         if (isHiddenLayer) {
-          // Just update active state for chart purposes, but don't try to toggle map visibility
+         
           if (on) activeLayers.add(r.id); else activeLayers.delete(r.id);
           updateKpis(); metaEl.textContent = `${activeLayers.size} active`;
           return;
         }
-        // Handle markers visibility
+        
         if (mapAssets._markersByLayer && mapAssets._markersByLayer.has(r.id)) {
           const markers = mapAssets._markersByLayer.get(r.id);
           markers.forEach(m => {
@@ -881,7 +881,7 @@ function buildLayerDock(manifest, layerIds){
             if (el) el.style.display = on ? '' : 'none';
           });
         } else {
-          // For non-point layers, use layer visibility (handle outline layers too)
+          
           if (mapAssets.getLayer(r.id)) {
             mapAssets.setLayoutProperty(r.id,'visibility', on?'visible':'none');
           }
@@ -894,7 +894,7 @@ function buildLayerDock(manifest, layerIds){
       };
       tools.appendChild(sw);
 
-      // zoom
+      
       const zoomBtn = document.createElement('button');
       zoomBtn.className = 'icon-btn small';
       zoomBtn.textContent = 'Zoom';
@@ -913,11 +913,11 @@ function buildLayerDock(manifest, layerIds){
     metaEl.textContent = `${activeLayers.size} active`;
   }
 
-  // search + global buttons + collapse
+  
   search.addEventListener('input', e => { query = (e.target.value||'').toLowerCase(); renderList(); });
   document.getElementById('dockAllOn').onclick  = ()=>{ 
     layerIds.forEach(id=>{
-      // Skip Manholes, LightPoles, Tree, and street (not rendered on map)
+      
       const isHiddenLayer = /^(lyr_Manholes|lyr_LightPoles|lyr_Tree|lyr_street|lyr_SLLstreet)$/i.test(id);
       if (isHiddenLayer) {
         activeLayers.add(id);
@@ -1835,3 +1835,4 @@ const ro = new ResizeObserver(debounce(doResize, 60));
 </script>
 </body>
 </html>
+
