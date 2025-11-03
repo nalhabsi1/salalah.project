@@ -1,0 +1,135 @@
+:root{
+  --bg:#f7f9fc;
+  --panel:#ffffff;
+  --text:#0f172a;
+  --muted:#64748b;
+  --ring:#e5e7eb;
+  --accent:#2563eb;
+  --chip:#eef2ff;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font:14px/1.4 Inter,Segoe UI,system-ui,Arial;
+}
+
+/* Top bar */
+.topbar{
+  position:sticky; top:0; z-index:10;
+  display:flex; gap:12px; align-items:center; justify-content:space-between;
+  padding:10px 16px; border-bottom:1px solid var(--ring);
+  background:linear-gradient(180deg,#ffffffcc 0%, #ffffffa6 100%);
+  backdrop-filter:saturate(1.1) blur(6px);
+}
+.brand{display:flex;flex-direction:column;gap:2px}
+.brand-small{font-size:12px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase}
+.brand-title{font-size:16px; font-weight:800}
+
+.chipbar{display:flex; gap:8px; overflow:auto; max-width:72vw; padding:4px 0}
+.chip{
+  display:inline-flex; align-items:center; gap:8px; padding:6px 10px;
+  background:var(--chip); border:1px solid var(--ring); border-radius:20px;
+  color:var(--text); white-space:nowrap; user-select:none; cursor:pointer;
+  font-size:12px;
+}
+.chip input{accent-color:var(--accent)}
+
+/* Main grid */
+.layout{display:grid; grid-template-columns: 2fr 1fr; gap:14px; padding:14px; min-height:calc(100vh - 120px)}
+.panel{background:var(--panel); border:1px solid var(--ring); border-radius:14px; box-shadow:0 10px 20px rgba(0,0,0,.04)}
+.mapcard{padding:0; position:relative; overflow:hidden}
+#map{height:100%; min-height:560px; border-radius:14px}
+
+.floating{position:absolute; right:10px; bottom:10px; display:flex; gap:8px}
+.btn{
+  border:1px solid var(--ring); background:#fff; color:var(--text);
+  border-radius:8px; padding:6px 10px; cursor:pointer;
+}
+.btn:hover{border-color:#d1d5db}
+
+.side{display:grid; gap:14px; grid-auto-rows:min-content; padding:12px}
+.card{border:1px solid var(--ring); border-radius:12px; background:var(--panel)}
+.card h3{margin:12px 12px 8px}
+.mini{height:170px; margin:8px; border-radius:10px; border:1px solid var(--ring)}
+canvas{padding:10px}
+
+/* KPIs */
+.kpis{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding:14px}
+.kpi{display:flex; justify-content:space-between; align-items:center; padding:12px}
+.kpi-label{color:var(--muted)}
+.kpi-value{font-size:22px; font-weight:800; color:var(--accent)}
+
+@media (max-width:1100px){
+  .layout{grid-template-columns:1fr}
+  #map{min-height:420px}
+}
+/* ---------- SCALE / LAYOUT FIXES ---------- */
+html, body { height: 100%; }
+:root{
+  /* auto-scale type: ~14–18px depending on screen */
+  --fs: clamp(14px, 1.05vw + 10px, 18px);
+}
+body{
+  font: var(--fs)/1.55 ui-sans-serif,system-ui,"Segoe UI",Roboto,Arial,sans-serif;
+  /* allow scroll if needed (no more zooming weirdness) */
+  overflow-y: auto; 
+  overflow-x: hidden;
+}
+.app{
+  /* use modern viewport unit to avoid mobile address-bar jump */
+  height: calc(100dvh - 64px);
+}
+
+/* Slightly smaller cards on small screens */
+@media (max-width: 1200px){
+  .card { padding: 10px; }
+}
+
+/* ---------- LEGEND PANEL ---------- */
+.legend{
+  border:1px solid var(--border);
+  background: var(--panel2);
+  border-radius: 12px;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+.legend .legend-row{
+  display:flex; align-items:center; gap:8px;
+  padding:6px 8px; border-radius:10px;
+  background:#fff; border:1px solid var(--border);
+}
+.legend .legend-group{
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius: 10px; overflow: hidden;
+  margin-top:8px;
+}
+.legend .legend-group > summary{
+  list-style: none; cursor: pointer; user-select: none;
+  font-weight: 900; padding:8px 10px; background: var(--panel2);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:8px; justify-content:space-between;
+}
+.legend .legend-group > summary .meta{
+  color: var(--muted); font-weight:700; font-size: 0.9em;
+}
+.legend .layer-item{
+  display:flex; align-items:center; gap:8px;
+  padding:6px 10px; border-top:1px solid var(--border);
+}
+.legend .swatch{
+  width:14px; height:14px; border-radius:50%;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.1);
+}
+.legend input[type="checkbox"]{ transform: translateY(1px); }
+.legend .tools{ display:flex; gap:6px; }
+.legend .gbtn{
+  border:1px solid var(--border); background: var(--panel2);
+  padding:4px 8px; border-radius: 999px; font-weight:800; cursor:pointer;
+  font-size: 0.85em;
+}
+
+/* Maplibre scale control spacing */
+.maplibregl-ctrl-scale { margin: 8px; }
