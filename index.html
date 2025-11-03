@@ -1735,31 +1735,30 @@ if ((!data?.features || data.features.length===0) && (raw?.features?.length>0)) 
         });
       }
 
-      // Only add to clickable and layerIds if rendered on map
+      
       if (!skipMapRendering) {
         clickable.push(lyr); 
         if (/Line/i.test(geomType)) {
-          clickable.push(lyr + '_outline'); // Also make outline clickable
+          clickable.push(lyr + '_outline'); 
         }
         layerIds.push(lyr);
       } else {
-        // For Manholes and LightPoles, still add to layerIds so they appear in dock
-        // but they won't be toggleable since there's nothing to show/hide
+        
         layerIds.push(lyr);
       }
     }
   }
 
-  // Fit to all (including processed and remaining)
+  
   const allFeatures = Array.from(featuresByLayer.values()).flat();
   const allFC = { 
     type:'FeatureCollection', 
     features: [...allFeatures, ...(processed.features || []), ...(remaining.features || [])] 
   };
 if (allFC.features.length) fitToFC(mapAssets, allFC);
-else mapAssets.fitBounds([[52.5,16.5],[55.5,18.5]], { padding:30, duration:0 }); // fallback Salalah window
+else mapAssets.fitBounds([[52.5,16.5],[55.5,18.5]], { padding:30, duration:0 }); 
 
-// If SLLstreet still has 0 features, surface a subtle in-app warning
+
 try{
   const streetLyrId = Array.from(featuresByLayer.keys()).find(k=>/SLLstreet|street/i.test(k));
   if (streetLyrId && (featuresByLayer.get(streetLyrId)?.length||0)===0){
@@ -1771,10 +1770,10 @@ try{
   }
 }catch{}
 
-  // Build the floating Layer Dock
+  
   buildLayerDock(manifest, layerIds);
 
-  // Right bar chart - use GeoJSON feature counts with group filter
+  
   let barChartFilter = '__ALL__';
   const allBarData = Array.from(assetCounts.entries())
     .map(([name, info]) => ({
@@ -1798,7 +1797,7 @@ try{
     assetBar.update();
   }
   
-  // Build bar chart filter dropdown
+
   const barFilterEl = document.getElementById('barChartFilter');
   const allGroups = Array.from(new Set(Array.from(assetCounts.values()).map(i => i.group))).sort();
   
@@ -1816,13 +1815,13 @@ try{
   
   updateBarChart();
 
-  // Reveal
+  
   setTimeout(()=>{ document.querySelector('.app')?.classList.remove('hidden'); doResize(); }, 60);
 
-  // CRS auto-detect is now always on; no manual override UI
+ 
 })();
 
-/* ====== Resize helpers ====== */
+
 function debounce(fn, ms=120){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
 function doResize(){ try { mapAssets.resize(); }catch{} try { mapProgress.resize(); }catch{} try { areaChart.resize(); }catch{} try { assetBar.resize(); }catch{} }
 window.addEventListener('resize', debounce(doResize, 150));
@@ -1835,5 +1834,6 @@ const ro = new ResizeObserver(debounce(doResize, 60));
 </script>
 </body>
 </html>
+
 
 
